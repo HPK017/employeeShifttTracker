@@ -6,6 +6,7 @@ import com.hp.employee.entity.Employee;
 import com.hp.employee.repository.EmployeeRepository;
 import com.hp.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,13 +17,13 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-
+    private final PasswordEncoder passwordEncoder;
     public EmployeeResponseDto createEmployee(EmployeeRequestDto dto) {
 
         Employee employee = Employee.builder()
                 .name(dto.getName())
                 .email(dto.getEmail())
-                .password(dto.getPassword())
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .assignedShiftHours(dto.getAssignedShiftHours())
                 .role(dto.getRole())
                 .build();
@@ -79,6 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .id(employee.getId())
                 .name(employee.getName())
                 .email(employee.getEmail())
+                .password(passwordEncoder.encode(employee.getPassword()))
                 .assignShiftedHours(employee.getAssignedShiftHours())
                 .role(employee.getRole())
                 .build();
