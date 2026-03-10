@@ -8,6 +8,6 @@ public class EmployeeRequestDto {
     private String name;
     private String email;
     private String password;
-    private int assignShiftedHours;
+    private Integer  assignedShiftHours;
     private Role role;
 }
