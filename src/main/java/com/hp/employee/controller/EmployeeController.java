@@ -1,5 +1,7 @@
 package com.hp.employee.controller;
 
+import com.hp.employee.dto.EmployeeLoginRequestDto;
+import com.hp.employee.dto.EmployeeLoginResponseDto;
 import com.hp.employee.dto.EmployeeRequestDto;
 import com.hp.employee.dto.EmployeeResponseDto;
 import com.hp.employee.service.EmployeeService;
@@ -10,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/employees")
+@RequestMapping("/employees")
 @RequiredArgsConstructor
 public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @PostMapping("create")
-    public EmployeeResponseDto createEmployee(@RequestBody EmployeeRequestDto employeeRequestDto) {
+    @PostMapping("/register")
+    public EmployeeResponseDto register(@RequestBody EmployeeRequestDto employeeRequestDto) {
         return employeeService.createEmployee(employeeRequestDto);
     }
 
