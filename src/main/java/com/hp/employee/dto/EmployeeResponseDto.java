@@ -11,7 +11,7 @@ public class EmployeeResponseDto {
     private Long id;
     private String name;
     private String email;
-    private String password;
-    private int assignShiftedHours;
+    //private String password;
+    private Integer assignedShiftHours;
     private Role role;
 }

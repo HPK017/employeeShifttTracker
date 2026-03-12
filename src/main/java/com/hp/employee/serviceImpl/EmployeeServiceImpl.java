@@ -4,6 +4,7 @@ import com.hp.employee.dto.EmployeeRequestDto;
 import com.hp.employee.dto.EmployeeResponseDto;
 import com.hp.employee.entity.Employee;
 import com.hp.employee.repository.EmployeeRepository;
+import com.hp.employee.security.JwtUtil;
 import com.hp.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,7 +57,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employee.setName(dto.getName());
         employee.setEmail(dto.getEmail());
-        employee.setPassword(dto.getPassword());
+        employee.setPassword(passwordEncoder.encode(dto.getPassword()));
         employee.setAssignedShiftHours(dto.getAssignedShiftHours());
         employee.setRole(dto.getRole());
 
@@ -76,14 +77,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeResponseDto mapTOResponse(Employee employee) {
 
-        return EmployeeResponseDto.builder()
+        EmployeeResponseDto dto = EmployeeResponseDto.builder()
                 .id(employee.getId())
                 .name(employee.getName())
                 .email(employee.getEmail())
-                .password(passwordEncoder.encode(employee.getPassword()))
-                .assignShiftedHours(employee.getAssignedShiftHours())
+                .assignedShiftHours(employee.getAssignedShiftHours())
                 .role(employee.getRole())
                 .build();
+
+        System.out.println(dto);   // DEBUG
+
+        return dto;
     }
 
 }
