@@ -19,9 +19,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
+
     public EmployeeResponseDto createEmployee(EmployeeRequestDto dto) {
 
-        Employee employee = Employee.builder()
+        Employee employee = employeeRepository.findByEmail(dto.getEmail()).orElse(null);
+
+        if (employee != null) throw new IllegalArgumentException("User already Exists");
+
+        employee = Employee.builder()
                 .name(dto.getName())
                 .email(dto.getEmail())
                 .password(passwordEncoder.encode(dto.getPassword()))
