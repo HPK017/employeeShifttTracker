@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,6 +29,15 @@ public class Shift {
     private LocalDateTime startTime;
 
     private LocalDateTime endTime;
+
+    private Float actualHours;
+
+    public void calculateActualHours() {
+        if(startTime != null && endTime != null) {
+            Duration duration = Duration.between(startTime, endTime);
+            this.actualHours = duration.toMinutes() / 60.0f;
+        }
+    }
 
 
 }
