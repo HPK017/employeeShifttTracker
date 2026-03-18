@@ -1,0 +1,51 @@
+package com.hp.employee.serviceImpl;
+
+import com.hp.employee.dto.ShiftResponseDto;
+import com.hp.employee.entity.Employee;
+import com.hp.employee.entity.Shift;
+import com.hp.employee.repository.EmployeeRepository;
+import com.hp.employee.repository.ShiftRepository;
+import com.hp.employee.service.EmployeeService;
+import com.hp.employee.service.ShiftService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class ShiftServiceImpl implements ShiftService {
+
+    private final EmployeeRepository employeeRepository;
+    private final ShiftRepository shiftRepository;
+    @Override
+    public List<ShiftResponseDto> getAllShifts() {
+        return shiftRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ShiftResponseDto getShiftsByEmployeeId(Long EmployeeId) {
+
+        Shift employeeOfShift = shiftRepository.findByEmployeeId(EmployeeId)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        return mapToResponse(employeeOfShift);
+    }
+
+    private ShiftResponseDto mapToResponse(Shift shift) {
+
+        ShiftResponseDto dto = ShiftResponseDto
+                .builder()
+                .shiftId(shift.getId())
+                .startTime(shift.getStartTime())
+                .endTime(shift.getEndTime())
+                .actualHours(shift.getActualHours())
+                .build();
+
+        return dto;
+    }
+}
