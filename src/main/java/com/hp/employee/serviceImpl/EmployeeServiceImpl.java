@@ -3,6 +3,7 @@ package com.hp.employee.serviceImpl;
 import com.hp.employee.dto.EmployeeRequestDto;
 import com.hp.employee.dto.EmployeeResponseDto;
 import com.hp.employee.entity.Employee;
+import com.hp.employee.exception.ResourceNotFoundException;
 import com.hp.employee.repository.EmployeeRepository;
 import com.hp.employee.security.JwtUtil;
 import com.hp.employee.service.EmployeeService;
@@ -24,7 +25,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee employee = employeeRepository.findByEmail(dto.getEmail()).orElse(null);
 
-        if (employee != null) throw new IllegalArgumentException("User already Exists");
+        if (employee != null) throw new IllegalArgumentException("Employee already Exists");
 
         employee = Employee.builder()
                 .name(dto.getName())
