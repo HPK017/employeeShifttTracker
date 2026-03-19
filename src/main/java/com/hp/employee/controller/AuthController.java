@@ -1,7 +1,6 @@
 package com.hp.employee.controller;
 
-import com.hp.employee.dto.EmployeeLoginRequestDto;
-import com.hp.employee.dto.EmployeeLoginResponseDto;
+import com.hp.employee.dto.*;
 import com.hp.employee.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,5 +18,10 @@ public class AuthController {
     @PostMapping("/login")
     public EmployeeLoginResponseDto login(@RequestBody EmployeeLoginRequestDto employeeLoginRequestDto) {
         return authService.loginEmployee(employeeLoginRequestDto);
+    }
+
+    @PostMapping("/logout")
+    public LogOutResponseDto logOut(@RequestBody LogoutRequestDto logoutRequestDto) {
+        return authService.logOutEmployee(logoutRequestDto);
     }
 }
