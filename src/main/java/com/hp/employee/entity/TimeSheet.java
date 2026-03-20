@@ -37,8 +37,6 @@ public class TimeSheet {
 
     private LocalDateTime fromDate;
 
-    private LocalDateTime toDate;
+    private LocalDateTime endDate;
 
-    @Column(nullable = false)
-    private Double actualHours;
 }
