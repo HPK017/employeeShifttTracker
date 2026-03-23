@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class TimeSheetResponseDto {
 
+    private Long timesheetId;
     private Long employeeId;
     private Long shiftId;
     private String projectName;

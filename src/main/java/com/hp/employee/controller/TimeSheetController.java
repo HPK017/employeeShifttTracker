@@ -32,12 +32,12 @@ public class TimeSheetController {
     }
 
     @PutMapping("/{id}")
-    public TimeSheetResponseDto updateTimeSheet(@PathVariable Long id,
+    public TimeSheetResponseDto updateTimeSheet(@PathVariable Long id, @RequestBody
                                                 TimeSheetRequestDto timeSheetRequestDto) {
         return timeSheetService.updateTimeSheet(id, timeSheetRequestDto);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public String deleteTimeSheet(@PathVariable Long id){
         timeSheetService.deleteTimeSheet(id);
         return "TimeSheet Deleted Successfully";

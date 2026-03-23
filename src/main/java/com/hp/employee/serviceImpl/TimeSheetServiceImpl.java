@@ -9,6 +9,7 @@ import com.hp.employee.repository.EmployeeRepository;
 import com.hp.employee.repository.ShiftRepository;
 import com.hp.employee.repository.TimeSheetRepository;
 import com.hp.employee.service.TimeSheetService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +25,8 @@ public class TimeSheetServiceImpl implements TimeSheetService {
     private final ShiftRepository shiftRepository;
 
     @Override
+    @Transactional
     public TimeSheetResponseDto createTimeSheet(TimeSheetRequestDto timeSheetRequestDto) {
-
-        TimeSheet timeSheet = timeSheetRepository.findById(timeSheetRequestDto.getTimeSheetId())
-                .orElse(null);
-
-        if (timeSheet != null) throw new IllegalArgumentException("TimeSheet not Found");
 
         Employee employee = employeeRepository.findById(timeSheetRequestDto.getEmployeeId())
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
@@ -37,8 +34,7 @@ public class TimeSheetServiceImpl implements TimeSheetService {
         Shift shift = shiftRepository.findById(timeSheetRequestDto.getShiftId())
                 .orElseThrow(() -> new RuntimeException("Shift not found"));
 
-        timeSheet = TimeSheet.builder()
-                .id(timeSheetRequestDto.getTimeSheetId())
+        TimeSheet timeSheet = TimeSheet.builder()
                 .employee(employee)
                 .shift(shift)
                 .projectName(timeSheetRequestDto.getProjectName())
@@ -70,6 +66,7 @@ public class TimeSheetServiceImpl implements TimeSheetService {
     }
 
     @Override
+    @Transactional
     public TimeSheetResponseDto updateTimeSheet(Long id, TimeSheetRequestDto timeSheetRequestDto) {
 
         TimeSheet timeSheet = timeSheetRepository.findById(id)
@@ -104,8 +101,10 @@ public class TimeSheetServiceImpl implements TimeSheetService {
     private TimeSheetResponseDto mapToResponse(TimeSheet timeSheet) {
 
         TimeSheetResponseDto dto = TimeSheetResponseDto.builder()
+                .timesheetId(timeSheet.getId())
                 .employeeId(timeSheet.getEmployee().getId())
                 .shiftId(timeSheet.getEmployee().getId())
+                .projectName(timeSheet.getProjectName())
                 .taskName(timeSheet.getTaskName())
                 .fromDate(timeSheet.getFromDate())
                 .endDate(timeSheet.getEndDate())

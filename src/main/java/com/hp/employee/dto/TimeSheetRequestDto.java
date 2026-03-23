@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class TimeSheetRequestDto {
-    private Long timeSheetId;
     private Long employeeId;
     private Long shiftId;
     private String projectName;
