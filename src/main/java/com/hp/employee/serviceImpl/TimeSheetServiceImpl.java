@@ -11,6 +11,7 @@ import com.hp.employee.repository.TimeSheetRepository;
 import com.hp.employee.service.TimeSheetService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class TimeSheetServiceImpl implements TimeSheetService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('timesheet:create')")
     public TimeSheetResponseDto createTimeSheet(TimeSheetRequestDto timeSheetRequestDto) {
 
         Employee employee = employeeRepository.findById(timeSheetRequestDto.getEmployeeId())
@@ -49,6 +51,7 @@ public class TimeSheetServiceImpl implements TimeSheetService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('timesheet:view')")
     public TimeSheetResponseDto getTimeSheetById(Long id) {
 
         TimeSheet timeSheet = timeSheetRepository.findById(id)
@@ -58,6 +61,7 @@ public class TimeSheetServiceImpl implements TimeSheetService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('timesheet:view')")
     public List<TimeSheetResponseDto> getAllTimeSheets() {
         return timeSheetRepository.findAll()
                 .stream()
@@ -67,6 +71,7 @@ public class TimeSheetServiceImpl implements TimeSheetService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAuthority('timesheet:update')")
     public TimeSheetResponseDto updateTimeSheet(Long id, TimeSheetRequestDto timeSheetRequestDto) {
 
         TimeSheet timeSheet = timeSheetRepository.findById(id)
@@ -89,6 +94,7 @@ public class TimeSheetServiceImpl implements TimeSheetService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('timesheet:delete')")
     public void deleteTimeSheet(Long id) {
 
         TimeSheet timeSheet = timeSheetRepository.findById(id)

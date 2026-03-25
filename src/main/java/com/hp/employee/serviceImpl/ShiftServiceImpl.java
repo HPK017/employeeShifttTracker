@@ -8,6 +8,7 @@ import com.hp.employee.repository.ShiftRepository;
 import com.hp.employee.service.EmployeeService;
 import com.hp.employee.service.ShiftService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,9 @@ public class ShiftServiceImpl implements ShiftService {
 
     private final EmployeeRepository employeeRepository;
     private final ShiftRepository shiftRepository;
+
     @Override
+    @PreAuthorize("hasAuthority('shift:view')")
     public List<ShiftResponseDto> getAllShifts() {
         return shiftRepository.findAll()
                 .stream()
@@ -28,6 +31,7 @@ public class ShiftServiceImpl implements ShiftService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('shift:view')")
     public ShiftResponseDto getShiftsByEmployeeId(Long EmployeeId) {
 
         Shift employeeOfShift = shiftRepository.findByEmployeeId(EmployeeId)

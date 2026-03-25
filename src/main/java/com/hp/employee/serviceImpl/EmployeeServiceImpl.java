@@ -8,6 +8,7 @@ import com.hp.employee.repository.EmployeeRepository;
 import com.hp.employee.security.JwtUtil;
 import com.hp.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return mapTOResponse(saved);
     }
 
+    @PreAuthorize("hasAuthority('employee:read')")
     public EmployeeResponseDto getEmployeeById(Long id) {
 
         Employee employee = employeeRepository.findById(id)
@@ -48,6 +50,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return mapTOResponse(employee);
     }
 
+    @PreAuthorize("hasAuthority('employee:read')")
     public List<EmployeeResponseDto> getAllEmployees() {
 
         return employeeRepository.findAll()
@@ -56,6 +59,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .collect(Collectors.toList());
     }
 
+    @PreAuthorize("hasAuthority('employee:update')")
     public EmployeeResponseDto updateEmployee(Long id, EmployeeRequestDto dto) {
 
         Employee employee = employeeRepository.findById(id)
@@ -73,6 +77,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
+    @PreAuthorize("hasAuthority('employee:delete')")
     public void deleteEmployee(Long id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found"));

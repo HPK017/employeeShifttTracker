@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -24,6 +25,7 @@ public class ReportingServiceImpl implements ReportingService {
     private final ShiftRepository shiftRepository;
 
     @Override
+    @PreAuthorize("hasAuthority('report:view')")
     public List<ReportingResponseDto> generateReport(LocalDateTime start, LocalDateTime end) {
 
         List<Shift> shifts = shiftRepository.findByStartTimeBetween(start, end);
@@ -40,6 +42,7 @@ public class ReportingServiceImpl implements ReportingService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('report:download')")
     public byte[] generateReportExcel(LocalDateTime start, LocalDateTime end) {
 
         try {
