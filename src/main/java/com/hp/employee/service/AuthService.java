@@ -8,4 +8,6 @@ public interface AuthService {
 
     LogOutResponseDto logOutEmployee(LogoutRequestDto empDto);
 
+    EmployeeLoginResponseDto refreshToken(String refreshToken);
+
 }

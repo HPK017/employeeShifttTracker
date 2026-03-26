@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,10 +46,12 @@ public class AuthServiceImpl implements AuthService {
 
         shiftRepository.save(shift);
 
-        String token = jwtUtil.generateToken(employee.getEmail());
+        String accessToken = jwtUtil.generateToken(employee.getEmail());
+        String refreshToken = jwtUtil.createRefreshToken(employee.getEmail());
 
         return EmployeeLoginResponseDto.builder()
-                .token(token)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .email(employee.getEmail())
                 .role(employee.getRole())
                 .build();
@@ -76,5 +79,19 @@ public class AuthServiceImpl implements AuthService {
                 .message("Logout Successful")
                 .build();
 
+    }
+
+    @Override
+    public EmployeeLoginResponseDto refreshToken(String refreshToken) {
+        String email = jwtUtil.extractEmail(refreshToken);
+        //Optional<Employee> employee = employeeRepository.findByEmail(email);
+
+        String accessToken = jwtUtil.createRefreshToken(email);
+
+        return EmployeeLoginResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .email(email)
+                .build();
     }
 }
