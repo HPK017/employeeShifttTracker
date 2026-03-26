@@ -30,6 +30,16 @@ public class JwtUtil {
                 .compact();
     }
 
+    public String createRefreshToken(String email) {
+
+        return Jwts.builder()
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis()+ 1000L *60*60*24*30*6))
+                .signWith(getSecretKey())
+                .compact();
+    }
+
     public String extractEmail(String token) {
         return Jwts.parser()
                 .verifyWith(getSecretKey())
