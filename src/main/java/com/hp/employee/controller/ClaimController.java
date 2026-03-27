@@ -4,6 +4,11 @@ import com.hp.employee.dto.ClaimRequestDto;
 import com.hp.employee.dto.ClaimResponseDto;
 import com.hp.employee.service.ClaimService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,13 +26,22 @@ public class ClaimController {
     }
 
     @GetMapping
-    public List<ClaimResponseDto> getAllClaims() {
-        return claimService.getAllClaims();
+    public ResponseEntity<Page<ClaimResponseDto>> getAllClaims(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size
+        );
+
+        Page<ClaimResponseDto> result = claimService.getAllClaims(pageable);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/employee/{id}")
-    public List<ClaimResponseDto> getAllClaimsOfEmployee(@PathVariable Long id) {
-        return claimService.getClaimsByEmployee(id);
+    public Page<ClaimResponseDto> getAllClaimsOfEmployee(@PathVariable Long id, Pageable pageable) {
+        return claimService.getClaimsByEmployee(id, pageable);
     }
 
     @GetMapping("/{id}")

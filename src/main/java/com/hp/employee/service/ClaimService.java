@@ -2,6 +2,8 @@ package com.hp.employee.service;
 
 import com.hp.employee.dto.ClaimRequestDto;
 import com.hp.employee.dto.ClaimResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -11,9 +13,9 @@ public interface ClaimService {
 
     ClaimResponseDto getClaimById(Long id);
 
-    List<ClaimResponseDto> getClaimsByEmployee(Long employeeId);
+    Page<ClaimResponseDto> getClaimsByEmployee(Long employeeId, Pageable pageable);
 
-    List<ClaimResponseDto> getAllClaims();
+    Page<ClaimResponseDto> getAllClaims(Pageable pageable);
 
     ClaimResponseDto updateClaim(Long id, ClaimRequestDto claimRequestDto);
 
