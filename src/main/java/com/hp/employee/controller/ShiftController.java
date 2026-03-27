@@ -23,8 +23,14 @@ public class ShiftController {
 
 
     @GetMapping("/employee/{id}")
-    public ShiftResponseDto getEmployeeId(@PathVariable Long id) {
-        return shiftService.getShiftsByEmployeeId(id);
+    public Page<ShiftResponseDto> getEmployeeId(@PathVariable Long id,
+                                          @RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(
+                page,
+                size
+        );
+        return shiftService.getShiftsByEmployeeId(id, pageable);
     }
 
     @GetMapping("/getAllShifts")
