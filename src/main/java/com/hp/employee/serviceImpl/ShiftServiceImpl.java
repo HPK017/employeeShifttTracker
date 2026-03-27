@@ -8,6 +8,8 @@ import com.hp.employee.repository.ShiftRepository;
 import com.hp.employee.service.EmployeeService;
 import com.hp.employee.service.ShiftService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +25,9 @@ public class ShiftServiceImpl implements ShiftService {
 
     @Override
     @PreAuthorize("hasAuthority('shift:view')")
-    public List<ShiftResponseDto> getAllShifts() {
-        return shiftRepository.findAll()
-                .stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    public Page<ShiftResponseDto> getAllShifts(Pageable pageable) {
+        return shiftRepository.findAll(pageable)
+                .map(this::mapToResponse);
     }
 
     @Override

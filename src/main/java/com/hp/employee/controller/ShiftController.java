@@ -6,10 +6,11 @@ import com.hp.employee.repository.ShiftRepository;
 import com.hp.employee.service.ShiftService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.ReflectiveScan;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,7 +28,17 @@ public class ShiftController {
     }
 
     @GetMapping("/getAllShifts")
-    public List<ShiftResponseDto> getAllEmployees() {
-        return shiftService.getAllShifts();
+    public ResponseEntity<Page<ShiftResponseDto>> getAllEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size
+        );
+
+        Page<ShiftResponseDto> result = shiftService.getAllShifts(pageable);
+        return ResponseEntity.ok(result);
     }
 }
