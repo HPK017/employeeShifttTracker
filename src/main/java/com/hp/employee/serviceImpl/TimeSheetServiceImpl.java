@@ -11,6 +11,8 @@ import com.hp.employee.repository.TimeSheetRepository;
 import com.hp.employee.service.TimeSheetService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -62,11 +64,9 @@ public class TimeSheetServiceImpl implements TimeSheetService {
 
     @Override
     @PreAuthorize("hasAuthority('timesheet:view')")
-    public List<TimeSheetResponseDto> getAllTimeSheets() {
-        return timeSheetRepository.findAll()
-                .stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    public Page<TimeSheetResponseDto> getAllTimeSheets(Pageable pageable) {
+        return timeSheetRepository.findAll(pageable)
+                .map(this::mapToResponse);
     }
 
     @Override
