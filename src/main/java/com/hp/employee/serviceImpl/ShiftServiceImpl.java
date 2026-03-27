@@ -32,12 +32,10 @@ public class ShiftServiceImpl implements ShiftService {
 
     @Override
     @PreAuthorize("hasAuthority('shift:view')")
-    public ShiftResponseDto getShiftsByEmployeeId(Long EmployeeId) {
+    public Page<ShiftResponseDto> getShiftsByEmployeeId(Long EmployeeId, Pageable pageable) {
 
-        Shift employeeOfShift = shiftRepository.findByEmployeeId(EmployeeId)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
-
-        return mapToResponse(employeeOfShift);
+        return shiftRepository.findByEmployeeId(EmployeeId, pageable)
+                .map(this::mapToResponse);
     }
 
     private ShiftResponseDto mapToResponse(Shift shift) {

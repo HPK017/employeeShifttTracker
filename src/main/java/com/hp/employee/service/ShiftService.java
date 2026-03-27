@@ -10,5 +10,5 @@ public interface ShiftService {
 
     Page<ShiftResponseDto> getAllShifts(Pageable pageable);
 
-    ShiftResponseDto getShiftsByEmployeeId(Long EmployeeId);
+    Page<ShiftResponseDto> getShiftsByEmployeeId(Long EmployeeId, Pageable pageable);
 }

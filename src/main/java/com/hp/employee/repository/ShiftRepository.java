@@ -1,6 +1,8 @@
 package com.hp.employee.repository;
 
 import com.hp.employee.entity.Shift;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.w3c.dom.stylesheets.LinkStyle;
 
@@ -13,7 +15,7 @@ public interface ShiftRepository extends JpaRepository<Shift, Long> {
 
     Optional<Shift> findFirstByEmployeeIdAndEndTimeIsNullOrderByStartTimeDesc(Long employeeId);
 
-    Optional<Shift> findByEmployeeId(Long employeeId);
+    Page<Shift> findByEmployeeId(Long employeeId, Pageable pageable);
 
     List<Shift> findByStartTimeBetween(LocalDateTime start, LocalDateTime end);
 }
