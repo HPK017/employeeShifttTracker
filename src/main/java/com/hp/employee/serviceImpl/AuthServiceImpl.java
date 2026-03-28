@@ -5,19 +5,21 @@ import com.hp.employee.dto.EmployeeLoginResponseDto;
 import com.hp.employee.dto.LogOutResponseDto;
 import com.hp.employee.dto.LogoutRequestDto;
 import com.hp.employee.entity.Employee;
+import com.hp.employee.entity.RefreshToken;
 import com.hp.employee.entity.Shift;
 import com.hp.employee.exception.ResourceNotFoundException;
 import com.hp.employee.repository.EmployeeRepository;
+import com.hp.employee.repository.RefreshTokenRepository;
 import com.hp.employee.repository.ShiftRepository;
 import com.hp.employee.security.JwtUtil;
 import com.hp.employee.service.AuthService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +29,10 @@ public class AuthServiceImpl implements AuthService {
     private final ShiftRepository shiftRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
+    @Transactional
     public EmployeeLoginResponseDto loginEmployee(EmployeeLoginRequestDto empLogDto) {
 
         Employee employee = employeeRepository.findByEmail(empLogDto.getEmail())
@@ -49,6 +53,14 @@ public class AuthServiceImpl implements AuthService {
         String accessToken = jwtUtil.generateToken(employee.getEmail());
         String refreshToken = jwtUtil.createRefreshToken(employee.getEmail());
 
+        //store refresh token
+        RefreshToken token = new RefreshToken();
+        token.setToken(refreshToken);
+        token.setEmail(employee.getEmail());
+        token.setExpiryDate(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 180));
+
+        refreshTokenRepository.save(token);
+
         return EmployeeLoginResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
@@ -58,7 +70,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LogOutResponseDto logOutEmployee(LogoutRequestDto dto) {
+    @Transactional
+    public LogOutResponseDto logOutEmployee(LogoutRequestDto dto, String refreshToken) {
 
         Employee employee = employeeRepository.findById(dto.getEmployeeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
@@ -70,6 +83,10 @@ public class AuthServiceImpl implements AuthService {
         shift.setEndTime(LocalDateTime.now());
         shift.calculateActualHours();
         shiftRepository.save(shift);
+
+        //Invalidate refresh token
+        if(refreshToken != null)
+            refreshTokenRepository.deleteByToken(refreshToken);
 
         return LogOutResponseDto.builder()
                 .shiftId(shift.getId())
@@ -86,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
         String email = jwtUtil.extractEmail(refreshToken);
         //Optional<Employee> employee = employeeRepository.findByEmail(email);
 
-        String accessToken = jwtUtil.createRefreshToken(email);
+        String accessToken = jwtUtil.generateToken(email);
 
         return EmployeeLoginResponseDto.builder()
                 .accessToken(accessToken)

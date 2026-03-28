@@ -6,7 +6,7 @@ public interface AuthService {
 
     EmployeeLoginResponseDto loginEmployee(EmployeeLoginRequestDto empLogDto);
 
-    LogOutResponseDto logOutEmployee(LogoutRequestDto empDto);
+    LogOutResponseDto logOutEmployee(LogoutRequestDto empDto, String refreshToken);
 
     EmployeeLoginResponseDto refreshToken(String refreshToken);
 

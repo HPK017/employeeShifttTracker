@@ -38,8 +38,26 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public LogOutResponseDto logOut(@RequestBody LogoutRequestDto logoutRequestDto) {
-        return authService.logOutEmployee(logoutRequestDto);
+    public ResponseEntity<LogOutResponseDto> logOut(HttpServletRequest httpServletRequest,
+                                                    HttpServletResponse httpServletResponse,
+                                                    @RequestBody LogoutRequestDto logoutRequestDto) {
+
+        String refrshToken = Arrays.stream(httpServletRequest.getCookies())
+                .filter(cookie -> "refreshToken".equals(cookie.getName()))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElse(null);
+
+        LogOutResponseDto responseDto = authService.logOutEmployee(logoutRequestDto, refrshToken);
+
+        //Delete Cookie
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        httpServletResponse.addCookie(cookie);
+
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping("/refresh")
