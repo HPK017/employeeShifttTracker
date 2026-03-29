@@ -8,6 +8,8 @@ import com.hp.employee.repository.EmployeeRepository;
 import com.hp.employee.security.JwtUtil;
 import com.hp.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -51,12 +53,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @PreAuthorize("hasAuthority('employee:read')")
-    public List<EmployeeResponseDto> getAllEmployees() {
+    public Page<EmployeeResponseDto> getAllEmployees(Pageable pageable) {
 
-        return employeeRepository.findAll()
-                .stream()
-                .map(this::mapTOResponse)
-                .collect(Collectors.toList());
+        return employeeRepository.findAll(pageable)
+                .map(this::mapTOResponse);
     }
 
     @PreAuthorize("hasAuthority('employee:update')")

@@ -1,12 +1,13 @@
 package com.hp.employee.controller;
 
-import com.hp.employee.dto.EmployeeLoginRequestDto;
-import com.hp.employee.dto.EmployeeLoginResponseDto;
-import com.hp.employee.dto.EmployeeRequestDto;
-import com.hp.employee.dto.EmployeeResponseDto;
+import com.hp.employee.dto.*;
 import com.hp.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,8 +30,17 @@ public class EmployeeController {
     }
 
     @GetMapping("/getAllEmployees")
-    public List<EmployeeResponseDto> getAllEmployees() {
-        return employeeService.getAllEmployees();
+    public ResponseEntity<Page<EmployeeResponseDto>> getAllEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size
+        );
+
+        Page<EmployeeResponseDto> result = employeeService.getAllEmployees(pageable);
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{id}")
