@@ -8,6 +8,8 @@ import com.hp.employee.repository.ClaimRepository;
 import com.hp.employee.repository.EmployeeRepository;
 import com.hp.employee.service.ClaimService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -51,20 +53,16 @@ public class ClaimServiceImpl implements ClaimService {
 
     @Override
     @PreAuthorize("hasAuthority('claim:view')")
-    public List<ClaimResponseDto> getClaimsByEmployee(Long employeeId) {
-        return claimRepository.findByEmployeeId(employeeId)
-                .stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    public Page<ClaimResponseDto> getClaimsByEmployee(Long employeeId, Pageable pageable) {
+        return claimRepository.findByEmployeeId(employeeId, pageable)
+                .map(this::mapToResponse);
     }
 
     @Override
     @PreAuthorize("hasAuthority('claim:view')")
-    public List<ClaimResponseDto> getAllClaims() {
-        return claimRepository.findAll()
-                .stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    public Page<ClaimResponseDto> getAllClaims(Pageable pageable) {
+        return claimRepository.findAll(pageable)
+                .map(this::mapToResponse);
     }
 
     @Override
