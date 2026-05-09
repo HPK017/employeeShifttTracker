@@ -36,11 +36,11 @@ public class AuthServiceImpl implements AuthService {
     public EmployeeLoginResponseDto loginEmployee(EmployeeLoginRequestDto empLogDto) {
 
         Employee employee = employeeRepository.findByEmail(empLogDto.getEmail())
-                .orElseThrow(() -> new RuntimeException("Emplyoee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Emplyoee not found"));
 
 
         if (!passwordEncoder.matches(empLogDto.getPassword(), employee.getPassword())) {
-            throw new RuntimeException("Invalid Password");
+            throw new ResourceNotFoundException("Invalid Password");
         }
 
         Shift shift = Shift.builder()

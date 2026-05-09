@@ -4,6 +4,7 @@ import com.hp.employee.dto.ClaimRequestDto;
 import com.hp.employee.dto.ClaimResponseDto;
 import com.hp.employee.entity.Claim;
 import com.hp.employee.entity.Employee;
+import com.hp.employee.exception.ResourceNotFoundException;
 import com.hp.employee.repository.ClaimRepository;
 import com.hp.employee.repository.EmployeeRepository;
 import com.hp.employee.service.ClaimService;
@@ -28,7 +29,7 @@ public class ClaimServiceImpl implements ClaimService {
     public ClaimResponseDto createClaim(ClaimRequestDto claimRequestDto) {
 
         Employee employee = employeeRepository.findById(claimRequestDto.getEmployeeId())
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
         Claim claim = Claim.builder()
                 .keyC(claimRequestDto.getKeyC())
@@ -69,10 +70,10 @@ public class ClaimServiceImpl implements ClaimService {
     @PreAuthorize("hasAuthority('claim:update')")
     public ClaimResponseDto updateClaim(Long id, ClaimRequestDto claimRequestDto) {
         Claim claim = claimRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Claim id not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Claim id not found"));
 
         Employee employee = employeeRepository.findById(claimRequestDto.getEmployeeId())
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
         claim.setKeyC(claimRequestDto.getKeyC());
         claim.setValueC(claimRequestDto.getValueC());
@@ -87,7 +88,7 @@ public class ClaimServiceImpl implements ClaimService {
     @PreAuthorize("hasAuthority('claim:delete')")
     public void deleteClaim(Long id) {
         Claim claim = claimRepository.findById(id).
-                orElseThrow(() -> new RuntimeException("Claim not found"));
+                orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
         claimRepository.delete(claim);
     }
 

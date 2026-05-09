@@ -8,6 +8,9 @@ import com.hp.employee.repository.EmployeeRepository;
 import com.hp.employee.security.JwtUtil;
 import com.hp.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
@@ -28,7 +32,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee employee = employeeRepository.findByEmail(dto.getEmail()).orElse(null);
 
-        if (employee != null) throw new IllegalArgumentException("Employee already Exists");
+        if (employee != null) throw new ResourceNotFoundException("Employee already Exists");
 
         employee = Employee.builder()
                 .name(dto.getName())
@@ -47,7 +51,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponseDto getEmployeeById(Long id) {
 
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
         return mapTOResponse(employee);
     }
@@ -63,7 +67,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeResponseDto updateEmployee(Long id, EmployeeRequestDto dto) {
 
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
         employee.setName(dto.getName());
         employee.setEmail(dto.getEmail());
@@ -80,7 +84,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @PreAuthorize("hasAuthority('employee:delete')")
     public void deleteEmployee(Long id) {
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
         employeeRepository.delete(employee);
     }

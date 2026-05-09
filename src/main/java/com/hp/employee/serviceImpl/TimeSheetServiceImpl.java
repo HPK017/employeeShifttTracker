@@ -5,6 +5,7 @@ import com.hp.employee.dto.TimeSheetResponseDto;
 import com.hp.employee.entity.Employee;
 import com.hp.employee.entity.Shift;
 import com.hp.employee.entity.TimeSheet;
+import com.hp.employee.exception.ResourceNotFoundException;
 import com.hp.employee.repository.EmployeeRepository;
 import com.hp.employee.repository.ShiftRepository;
 import com.hp.employee.repository.TimeSheetRepository;
@@ -33,10 +34,10 @@ public class TimeSheetServiceImpl implements TimeSheetService {
     public TimeSheetResponseDto createTimeSheet(TimeSheetRequestDto timeSheetRequestDto) {
 
         Employee employee = employeeRepository.findById(timeSheetRequestDto.getEmployeeId())
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
         Shift shift = shiftRepository.findById(timeSheetRequestDto.getShiftId())
-                .orElseThrow(() -> new RuntimeException("Shift not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Shift not found"));
 
         TimeSheet timeSheet = TimeSheet.builder()
                 .employee(employee)
@@ -57,7 +58,7 @@ public class TimeSheetServiceImpl implements TimeSheetService {
     public TimeSheetResponseDto getTimeSheetById(Long id) {
 
         TimeSheet timeSheet = timeSheetRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("TimeSheet not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("TimeSheet not Found"));
 
         return mapToResponse(timeSheet);
     }
@@ -75,18 +76,18 @@ public class TimeSheetServiceImpl implements TimeSheetService {
     public TimeSheetResponseDto updateTimeSheet(Long id, TimeSheetRequestDto timeSheetRequestDto) {
 
         TimeSheet timeSheet = timeSheetRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("TimeSheet not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("TimeSheet not Found"));
 
         Employee employee = employeeRepository.findById(timeSheetRequestDto.getEmployeeId())
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 
         Shift shift = shiftRepository.findById(timeSheetRequestDto.getShiftId())
-                .orElseThrow(() -> new RuntimeException("Shift not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Shift not found"));
 
         timeSheet.setEmployee(employee);
         timeSheet.setShift(shift);
         timeSheet.setProjectName(timeSheetRequestDto.getProjectName());
-        timeSheet.setTaskName(timeSheet.getTaskName());
+        timeSheet.setTaskName(timeSheetRequestDto.getTaskName());
         timeSheet.setFromDate(timeSheetRequestDto.getFromDate());
         timeSheet.setEndDate(timeSheetRequestDto.getEndDate());
 
@@ -98,7 +99,7 @@ public class TimeSheetServiceImpl implements TimeSheetService {
     public void deleteTimeSheet(Long id) {
 
         TimeSheet timeSheet = timeSheetRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("TimeSheet not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("TimeSheet not Found"));
 
         timeSheetRepository.delete(timeSheet);
 
